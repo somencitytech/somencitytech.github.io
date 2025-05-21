@@ -1,34 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Website Status</title>
+  <meta charset="UTF-8">
+  <title>Website Status Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f6f8;
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .status-box {
+      max-width: 400px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .monitor {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+    .monitor:last-child {
+      border-bottom: none;
+    }
+    .status-up {
+      color: green;
+      font-weight: bold;
+    }
+    .status-down {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h1>Website Uptime Status</h1>
-  <p id="status">Checking status...</p>
+  <h1>🌐 Website Uptime Status</h1>
+  <div class="status-box" id="monitorStatus">
+    <p>Loading status...</p>
+  </div>
 
   <script>
-    const apiKey = "m783329614-f478c7773d483b706f5ced5f"; // Your UptimeRobot API key
+    const apiKeys = [
+      "m783329614-f478c7773d483b706f5ced5f",
+      "m800579887-d3317aa224d0cc489b6fee2e"
+    ];
 
-    fetch("https://api.uptimerobot.com/v2/getMonitors", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        api_key: apiKey,
-        format: "json"
+    const container = document.getElementById("monitorStatus");
+    container.innerHTML = ""; // Clear "Loading..." text
+
+    apiKeys.forEach(key => {
+      fetch("https://api.uptimerobot.com/v2/getMonitors", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          api_key: key,
+          format: "json"
+        })
       })
-    })
-    .then(response => response.json())
-    .then(data => {
-      const monitor = data.monitors[0]; // assuming one monitor
-      const status = monitor.status === 2 ? "🟢 UP" : "🔴 DOWN";
-      document.getElementById("status").innerText = `Your site is currently: ${status}`;
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      document.getElementById("status").innerText = "Failed to check status";
+      .then(response => response.json())
+      .then(data => {
+        const monitor = data.monitors[0]; // Each key returns one monitor
+        const statusText = monitor.status === 2 ? "🟢 UP" : "🔴 DOWN";
+        const statusClass = monitor.status === 2 ? "status-up" : "status-down";
+
+        const div = document.createElement("div");
+        div.classList.add("monitor");
+        div.innerHTML = `
+          <h3>${monitor.friendly_name}</h3>
+          <p class="${statusClass}">${statusText}</p>
+        `;
+        container.appendChild(div);
+      })
+      .catch(error => {
+        console.error("Error fetching monitor:", error);
+        const div = document.createElement("div");
+        div.classList.add("monitor");
+        div.innerHTML = `
+          <h3>Monitor Error</h3>
+          <p class="status-down">❌ Failed to load status</p>
+        `;
+        container.appendChild(div);
+      });
     });
   </script>
 </body>
