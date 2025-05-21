@@ -1,1 +1,35 @@
-test page
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Status</title>
+</head>
+<body>
+  <h1>Website Uptime Status</h1>
+  <p id="status">Checking status...</p>
+
+  <script>
+    const apiKey = "m783329614-f478c7773d483b706f5ced5f"; // Your UptimeRobot API key
+
+    fetch("https://api.uptimerobot.com/v2/getMonitors", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        format: "json"
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      const monitor = data.monitors[0]; // assuming one monitor
+      const status = monitor.status === 2 ? "🟢 UP" : "🔴 DOWN";
+      document.getElementById("status").innerText = `Your site is currently: ${status}`;
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      document.getElementById("status").innerText = "Failed to check status";
+    });
+  </script>
+</body>
+</html>
