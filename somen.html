@@ -3,12 +3,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Somen Page</title>
+  <title>Somen | Cloud Administrator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
-      background-color: #f1f1f1;
+      background-color: #f0f2f5;
       color: #333;
       padding: 40px;
     }
@@ -21,39 +21,95 @@
     }
 
     h1 {
-      font-size: 26px;
+      font-size: 28px;
+      margin: 0;
     }
 
     .logo {
-      height: 40px;
+      height: 50px;
     }
 
-    .content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    .profile-card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    a {
+    .section {
+      margin-bottom: 25px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+
+    .section ul {
+      padding-left: 20px;
+    }
+
+    .section ul li {
+      margin-bottom: 6px;
+    }
+
+    .back-link {
       display: inline-block;
       margin-top: 20px;
       color: #007BFF;
       text-decoration: none;
+    }
+
+    .contact {
+      margin-top: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>👤 Welcome to Somen's Page</h1>
-    <img src="https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-associate-badge.svg" class="logo">
+    <h1>👨‍💻 Somen | Cloud Administrator</h1>
+    <img src="https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-associate-badge.svg" class="logo" alt="Microsoft Certified Badge">
   </header>
 
-  <div class="content">
-    <p>This is a custom subpage for Somen. You can add any content here like profile information, status, reports, etc.</p>
-    
-    <a href="index.html">⬅ Back to Uptime Status</a>
+  <div class="profile-card">
+    <div class="section">
+      <h2>About Me</h2>
+      <p>I am a certified Cloud Administrator with hands-on experience in managing cloud infrastructure on Microsoft Azure. I specialize in ensuring system uptime, performance optimization, and secure cloud networking across hybrid environments.</p>
+    </div>
+
+    <div class="section">
+      <h2>Key Skills</h2>
+      <ul>
+        <li>Azure Resource Management (ARM)</li>
+        <li>Virtual Networks & NSG/Firewall Configuration</li>
+        <li>Monitoring & Alerts (Azure Monitor, Log Analytics)</li>
+        <li>Backup & Disaster Recovery</li>
+        <li>Automation with PowerShell & Azure CLI</li>
+        <li>Cost Management & Governance</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Certifications</h2>
+      <ul>
+        <li>Microsoft Certified: Azure Administrator Associate</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Contact</h2>
+      <p class="contact">
+        📧 Email: somenghosh99@gmail.com.com<br>
+        📞 Phone: +91-XXXXXXXXXX<br>
+        🌐 LinkedIn: <a href="https://www.linkedin.com/in/" target="_blank">linkedin.com/in/somen</a>
+      </p>
+    </div>
+
+    <a href="index.html" class="back-link">⬅ Back to Uptime Status</a>
   </div>
 
 </body>
