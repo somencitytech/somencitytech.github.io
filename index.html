@@ -28,6 +28,18 @@
       height: 40px;
     }
 
+    .nav-links {
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    .nav-links a {
+      color: #007BFF;
+      text-decoration: none;
+      font-weight: 500;
+      margin-left: 15px;
+    }
+
     .status-box {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -63,7 +75,12 @@
 <body>
 
   <header>
-    <h1>🌐 Website Uptime Status</h1>
+    <div>
+      <h1>🌐 Website Uptime Status</h1>
+      <div class="nav-links">
+        <a href="somen.html">🔗 Visit Somen's Page</a>
+      </div>
+    </div>
     <img src="https://www.paylitehr.com/wp-content/uploads/2024/06/paylite-logo-b.png" alt="Paylite Logo" class="logo">
   </header>
 
@@ -92,17 +109,18 @@
       })
       .then(response => response.json())
       .then(data => {
-        const monitor = data.monitors[0];
-        const status = monitor.status === 2 ? "🟢 UP" : "🔴 DOWN";
-        const statusClass = monitor.status === 2 ? "status-up" : "status-down";
+        data.monitors.forEach(monitor => {
+          const status = monitor.status === 2 ? "🟢 UP" : "🔴 DOWN";
+          const statusClass = monitor.status === 2 ? "status-up" : "status-down";
 
-        const div = document.createElement("div");
-        div.className = "monitor";
-        div.innerHTML = `
-          <h3>${monitor.friendly_name}</h3>
-          <p class="${statusClass}">${status}</p>
-        `;
-        container.appendChild(div);
+          const div = document.createElement("div");
+          div.className = "monitor";
+          div.innerHTML = `
+            <h3>${monitor.friendly_name}</h3>
+            <p class="${statusClass}">${status}</p>
+          `;
+          container.appendChild(div);
+        });
       })
       .catch(error => {
         console.error("API error:", error);
