@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Website Uptime Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 40px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 0;
+    }
+
+    .logo {
+      height: 40px;
+    }
+
+    .nav-links {
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    .nav-links a {
+      color: #007BFF;
+      text-decoration: none;
+      font-weight: 500;
+      margin-left: 15px;
+    }
+
+    .status-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .monitor {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .status-up {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-down {
+      color: red;
+      font-weight: bold;
+    }
+
+    .status-error {
+      color: gray;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>🌐 Website Uptime Status</h1>
+      <div class="nav-links">
+        <a href="somen.html">🔗 Visit Somen's Page</a>
+      </div>
+    </div>
+    <img src="https://www.paylitehr.com/wp-content/uploads/2024/06/paylite-logo-b.png" alt="Paylite Logo" class="logo">
+  </header>
+
+  <div class="status-box" id="monitorStatus">
+    <p>Loading status...</p>
+  </div>
+
+  <script>
+    const apiKeys = [
+      "m800580189-fc6d409b69f57a16c726220e",
+      "m783329614-f478c7773d483b706f5ced5f",
+      "m800580449-79cf463a4f2a3104b894f5dc",
+      "m800580440-86513e096b1f471b3171a334"
+    ];
+
+    const container = document.getElementById("monitorStatus");
+    container.innerHTML = "";
+
+    apiKeys.forEach(key => {
+      fetch("https://api.uptimerobot.com/v2/getMonitors", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ api_key: key, format: "json" })
+      })
+      .then(response => response.json())
+      .then(data => {
+        data.monitors.forEach(monitor => {
+          const status = monitor.status === 2 ? "🟢 UP" : "🔴 DOWN";
+          const statusClass = monitor.status === 2 ? "status-up" : "status-down";
+
+          const div = document.createElement("div");
+          div.className = "monitor";
+          div.innerHTML = `
+            <h3>${monitor.friendly_name}</h3>
+            <p class="${statusClass}">${status}</p>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(error => {
+        console.error("API error:", error);
+        const div = document.createElement("div");
+        div.className = "monitor";
+        div.innerHTML = `
+          <h3>Unknown Monitor</h3>
+          <p class="status-error">❌ Error loading status</p>
+        `;
+        container.appendChild(div);
+      });
+    });
+  </script>
+
+</body>
+</html>
