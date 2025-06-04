@@ -2,19 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Website Uptime Dashboard (Dark Mode)</title>
+  <title>Website Uptime Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
+      --bg-color: #ffffff;
+      --card-bg: #f0f0f0;
+      --text-color: #222;
+      --link-color: #007BFF;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --green: #4caf50;
+      --red: #e53935;
+      --gray: #555;
+    }
+
+    body.dark {
       --bg-color: #121212;
       --card-bg: #1f1f1f;
       --text-color: #e0e0e0;
       --link-color: #66b0ff;
       --shadow-color: rgba(0, 0, 0, 0.6);
-      --green: #4caf50;
-      --red: #e53935;
-      --gray: #999;
+      --gray: #aaa;
     }
 
     body {
@@ -22,6 +31,7 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       padding: 40px;
+      transition: background 0.3s, color 0.3s;
     }
 
     header {
@@ -66,6 +76,7 @@
       border-radius: 12px;
       box-shadow: 0 2px 10px var(--shadow-color);
       padding: 20px;
+      transition: background 0.3s;
     }
 
     .status-up {
@@ -97,6 +108,21 @@
       color: var(--gray);
       margin-bottom: 10px;
     }
+
+    .theme-toggle {
+      margin-top: 10px;
+    }
+
+    .theme-toggle label {
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .theme-toggle input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-left: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -105,7 +131,11 @@
     <div>
       <h1>🌐 Website Uptime Dashboard</h1>
       <div class="nav-links">
-        <a href="somen.html">🔗 Visit Somen's Page</a>
+        <a href="somen.html">🔗 Somen's Page</a>
+        <span class="theme-toggle">
+          <label for="themeSwitch">🌙 Dark Mode</label>
+          <input type="checkbox" id="themeSwitch">
+        </span>
       </div>
     </div>
     <img src="https://www.paylitehr.com/wp-content/uploads/2024/06/paylite-logo-b.png" alt="Paylite Logo" class="logo">
@@ -116,6 +146,26 @@
   </div>
 
   <script>
+    // Theme toggle
+    const themeSwitch = document.getElementById("themeSwitch");
+    const currentTheme = localStorage.getItem("theme");
+
+    if (currentTheme === "dark") {
+      document.body.classList.add("dark");
+      themeSwitch.checked = true;
+    }
+
+    themeSwitch.addEventListener("change", () => {
+      if (themeSwitch.checked) {
+        document.body.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.body.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+    });
+
+    // Uptime API fetch
     const apiKeys = [
       "m800580189-fc6d409b69f57a16c726220e",
       "m783329614-f478c7773d483b706f5ced5f",
@@ -129,9 +179,7 @@
     apiKeys.forEach(key => {
       fetch("https://api.uptimerobot.com/v2/getMonitors", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           api_key: key,
           format: "json",
@@ -148,11 +196,10 @@
           const statusClass = monitor.status === 2 ? "status-up" : "status-down";
           const logs = monitor.logs.slice(0, 5);
           const responseTimes = monitor.response_times;
+          const canvasId = `chart-${monitor.id}`;
 
           const div = document.createElement("div");
           div.className = "monitor";
-          const canvasId = `chart-${monitor.id}`;
-
           div.innerHTML = `
             <h3>${monitor.friendly_name}</h3>
             <p class="${statusClass}">${status}</p>
@@ -164,7 +211,7 @@
 
           container.appendChild(div);
 
-          // Chart rendering
+          // Chart.js
           const ctx = document.getElementById(canvasId).getContext("2d");
           new Chart(ctx, {
             type: 'line',
@@ -183,18 +230,18 @@
               scales: {
                 y: {
                   beginAtZero: true,
-                  ticks: { color: "#ccc" },
-                  grid: { color: "#333" }
+                  ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-color') },
+                  grid: { color: "#444" }
                 },
                 x: {
-                  ticks: { color: "#ccc" },
-                  grid: { color: "#333" }
+                  ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-color') },
+                  grid: { color: "#444" }
                 }
               },
               plugins: {
                 legend: {
                   labels: {
-                    color: "#ccc"
+                    color: getComputedStyle(document.body).getPropertyValue('--text-color')
                   }
                 }
               }
