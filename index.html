@@ -2,14 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Website Uptime Dashboard</title>
+  <title>Website Uptime Dashboard (Dark Mode)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1f1f1f;
+      --text-color: #e0e0e0;
+      --link-color: #66b0ff;
+      --shadow-color: rgba(0, 0, 0, 0.6);
+      --green: #4caf50;
+      --red: #e53935;
+      --gray: #999;
+    }
+
     body {
       font-family: "Segoe UI", sans-serif;
-      background-color: #f9f9f9;
-      color: #333;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       padding: 40px;
     }
 
@@ -27,6 +38,9 @@
 
     .logo {
       height: 40px;
+      background-color: white;
+      border-radius: 4px;
+      padding: 3px;
     }
 
     .nav-links {
@@ -35,7 +49,7 @@
     }
 
     .nav-links a {
-      color: #007BFF;
+      color: var(--link-color);
       text-decoration: none;
       font-weight: 500;
       margin-left: 15px;
@@ -48,24 +62,24 @@
     }
 
     .monitor {
-      background: #fff;
+      background: var(--card-bg);
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 10px var(--shadow-color);
       padding: 20px;
     }
 
     .status-up {
-      color: green;
+      color: var(--green);
       font-weight: bold;
     }
 
     .status-down {
-      color: red;
+      color: var(--red);
       font-weight: bold;
     }
 
     .status-error {
-      color: gray;
+      color: var(--gray);
       font-style: italic;
     }
 
@@ -80,7 +94,7 @@
 
     .uptime-ratio {
       font-size: 15px;
-      color: #555;
+      color: var(--gray);
       margin-bottom: 10px;
     }
   </style>
@@ -159,14 +173,30 @@
               datasets: [{
                 label: "Response Time (ms)",
                 data: responseTimes.map(rt => rt.value),
-                borderColor: "blue",
-                fill: false,
+                borderColor: "#66b0ff",
+                backgroundColor: "#66b0ff22",
+                fill: true,
                 tension: 0.3
               }]
             },
             options: {
               scales: {
-                y: { beginAtZero: true }
+                y: {
+                  beginAtZero: true,
+                  ticks: { color: "#ccc" },
+                  grid: { color: "#333" }
+                },
+                x: {
+                  ticks: { color: "#ccc" },
+                  grid: { color: "#333" }
+                }
+              },
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "#ccc"
+                  }
+                }
               }
             }
           });
