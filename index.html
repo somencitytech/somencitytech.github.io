@@ -189,52 +189,6 @@
       }
     });
 
-    // Voice Assistant Setup
-    const voiceBtn = document.getElementById("voiceBtn");
-    let recognition;
-    let isListening = false;
-
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.lang = "en-US";
-      recognition.interimResults = false;
-      recognition.continuous = false;
-
-      recognition.onstart = () => {
-        isListening = true;
-        voiceBtn.classList.add("listening");
-        voiceBtn.title = "Listening... Click to stop";
-      };
-
-      recognition.onend = () => {
-        isListening = false;
-        voiceBtn.classList.remove("listening");
-        voiceBtn.title = "Click and speak";
-      };
-
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error", event);
-        alert("Voice recognition error, try again.");
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript.toLowerCase();
-        processVoiceCommand(transcript);
-      };
-    } else {
-      voiceBtn.disabled = true;
-      voiceBtn.title = "Speech recognition not supported";
-    }
-
-    voiceBtn.addEventListener("click", () => {
-      if (isListening) {
-        recognition.stop();
-      } else {
-        recognition.start();
-      }
-    });
 
     // UptimeRobot API keys and container
     const apiKeys = [
