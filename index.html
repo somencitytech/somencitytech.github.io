@@ -280,10 +280,10 @@
           console.error("API error:", error);
           const div = document.createElement("div");
           div.className = "monitor";
-          div.innerHTML = 
+          div.innerHTML = `
             <h3>Unknown Monitor</h3>
             <p class="status-error">❌ Error loading status</p>
-          ;
+          `;
           container.appendChild(div);
         }
       }
@@ -295,11 +295,11 @@
         const statusClass = monitor.status === 2 ? "status-up" : "status-down";
         const logs = monitor.logs.slice(0, 5);
         const responseTimes = monitor.response_times;
-        const canvasId = chart-${monitor.id};
+        const canvasId = `chart-${monitor.id}`;
 
         const div = document.createElement("div");
         div.className = "monitor";
-        div.innerHTML = 
+        div.innerHTML = `
           <h3>${monitor.friendly_name}</h3>
           <p class="${statusClass}">${status}</p>
           <p class="uptime-ratio">Uptime: ${monitor.all_time_uptime_ratio}%</p>
@@ -307,13 +307,13 @@
           ${logs
             .map(
               (log) =>
-                <div class="log-entry">📅 ${new Date(
+                `<div class="log-entry">📅 ${new Date(
                   log.datetime * 1000
-                ).toLocaleString()} - ${log.type === 1 ? "Down" : "Up"}</div>
+                ).toLocaleString()} - ${log.type === 1 ? "Down" : "Up"}</div>`
             )
             .join("")}
           <canvas id="${canvasId}" height="100"></canvas>
-        ;
+        `;
         container.appendChild(div);
 
         // Chart.js
@@ -402,17 +402,17 @@
       const avgUptime = (totalUptime / allMonitors.length).toFixed(2);
       const avgResponse = (totalResponse / responseCount).toFixed(0);
 
-      let summary = AI Status Summary:\n\n;
-      summary += ✅ Total Monitors: ${allMonitors.length}\n;
-      summary += 🟢 Up: ${upCount}\n;
-      summary += 🔴 Down: ${downCount}\n;
-      summary += 📈 Average Uptime: ${avgUptime}%\n;
-      summary += ⏱️ Average Response Time: ${avgResponse} ms\n\n;
+      let summary = `AI Status Summary:\n\n`;
+      summary += `✅ Total Monitors: ${allMonitors.length}\n`;
+      summary += `🟢 Up: ${upCount}\n`;
+      summary += `🔴 Down: ${downCount}\n`;
+      summary += `📈 Average Uptime: ${avgUptime}%\n`;
+      summary += `⏱️ Average Response Time: ${avgResponse} ms\n\n`;
 
       if (downSites.length > 0) {
-        summary += Sites Down:\n - ${downSites.join("\n - ")}\n\n;
+        summary += `Sites Down:\n - ${downSites.join("\n - ")}\n\n`;
       } else {
-        summary += All sites are currently up.\n\n;
+        summary += `All sites are currently up.\n\n`;
       }
 
       summary +=
@@ -442,9 +442,9 @@
         const site = command.split("uptime of")[1].trim();
         const monitor = findMonitor(site);
         if (monitor) {
-          reply = ${monitor.friendly_name} uptime is ${monitor.all_time_uptime_ratio}%.;
+          reply = `${monitor.friendly_name} uptime is ${monitor.all_time_uptime_ratio}%.`;
         } else {
-          reply = I couldn't find a site named "${site}".;
+          reply = `I couldn't find a site named "${site}".`;
         }
       } else if (
         command.includes("any site down") ||
@@ -455,7 +455,7 @@
           .filter((m) => m.status !== 2)
           .map((m) => m.friendly_name);
         if (downSites.length > 0) {
-          reply = Sites down: ${downSites.join(", ")}.;
+          reply = `Sites down: ${downSites.join(", ")}.`;
         } else {
           reply = "All sites are currently up.";
         }
@@ -475,9 +475,9 @@
           }
         });
         if (slowest) {
-          reply = The slowest site is ${slowest.name} with average response time ${slowest.avgResp.toFixed(
+          reply = `The slowest site is ${slowest.name} with average response time ${slowest.avgResp.toFixed(
             0
-          )} ms.;
+          )} ms.`;
         } else {
           reply = "Sorry, no response time data available.";
         }
@@ -487,7 +487,7 @@
         command.includes("number of sites up")
       ) {
         const upCount = allMonitors.filter((m) => m.status === 2).length;
-        reply = ${upCount} site${upCount !== 1 ? "s" : ""} are up.;
+        reply = `${upCount} site${upCount !== 1 ? "s" : ""} are up.`;
       } else if (
         command.includes("average response time") ||
         command.includes("response time")
@@ -504,7 +504,7 @@
           }
         });
         if (count > 0) {
-          reply = Average response time is ${(totalResp / count).toFixed(0)} ms.;
+          reply = `Average response time is ${(totalResp / count).toFixed(0)} ms.`;
         } else {
           reply = "No response time data available.";
         }
