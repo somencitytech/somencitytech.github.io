@@ -32,6 +32,36 @@
             text-align: center;
         }
 
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #e4e7eb;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tab-btn.active {
+            background: #0078d4;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .status-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -119,7 +149,28 @@
         <button onclick="loadStatus()">Refresh Status</button>
     </div>
 
-    <div class="status-grid" id="statusGrid"></div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab(0,this)">Server 1</button>
+        <button class="tab-btn" onclick="showTab(1,this)">Server 2</button>
+        <button class="tab-btn" onclick="showTab(2,this)">Server 3</button>
+        <button class="tab-btn" onclick="showTab(3,this)">Server 4</button>
+    </div>
+
+    <div id="tab0" class="tab-content active">
+        <div class="status-grid" id="statusGrid0"></div>
+    </div>
+
+    <div id="tab1" class="tab-content">
+        <div class="status-grid" id="statusGrid1"></div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div class="status-grid" id="statusGrid2"></div>
+    </div>
+
+    <div id="tab3" class="tab-content">
+        <div class="status-grid" id="statusGrid3"></div>
+    </div>
 
     <div class="footer">
         Powered by UptimeRobot API
@@ -170,16 +221,19 @@ function getStatusText(status) {
 }
 
 async function loadStatus() {
-    const grid = document.getElementById('statusGrid');
     const summary = document.getElementById('summary');
 
-    grid.innerHTML = '';
+    for(let i=0;i<4;i++){
+        document.getElementById(`statusGrid${i}`).innerHTML='';
+    }
 
     let total = 0;
     let operational = 0;
 
     try {
-        for (const key of apiKeys) {
+        for (let index = 0; index < apiKeys.length; index++) {
+            const key = apiKeys[index];
+            const grid = document.getElementById(`statusGrid${index}`);
             const data = await fetchMonitors(key);
 
             if (data.monitors) {
@@ -212,7 +266,7 @@ async function loadStatus() {
 
         summary.innerHTML = `
             <h2>${operational}/${total} Services Operational</h2>
-            <p>Last Updated: ${new Date().toLocaleString()}</p>
+            <p>Last Updated (UAE Time): ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dubai' })}</p>
         `;
 
     } catch (error) {
@@ -222,6 +276,19 @@ async function loadStatus() {
 }
 
 loadStatus();
+
+function showTab(index, btn) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    document.getElementById(`tab${index}`).classList.add('active');
+    btn.classList.add('active');
+}
 
 setInterval(loadStatus, 60000);
 
