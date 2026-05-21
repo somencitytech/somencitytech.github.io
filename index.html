@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,7 +141,9 @@ const apiKeys = [
     'm800959382-bebdb4ea0602d3e7ab5cad64',
     'm801058089-288b02559b9bb80543f723b3',
     'm803106992-e669b60d01a9c8e044a2c2eb',
-    'm800965944-8e0ef5b0c57b1b0c12948018'
+    'm800965944-8e0ef5b0c57b1b0c12948018',
+    'm803122302-c37143a712ef531f34692c3a',
+    'm803122753-df9193e40a66f94f213bcb65'
 ];
 
 async function fetchMonitors(apiKey) {
@@ -211,7 +212,7 @@ async function loadStatus() {
                             <span class="status ${statusInfo.class}">${statusInfo.text}</span>
                         </div>
                         <p><strong>Type:</strong> ${monitor.type === 1 ? 'HTTP(s)' : 'Other'}</p>
-                        <p><strong>URL/IP:</strong> ${monitor.url || 'N/A'}</p>
+                        <p><strong>URL/IP:</strong> Hidden</p>
                         <p><strong>Interval:</strong> ${monitor.interval} minutes</p>
                     `;
 
@@ -233,12 +234,9 @@ async function loadStatus() {
 
 loadStatus();
 
-setInterval(loadStatus, 180000);
+setInterval(loadStatus, 360000);
 
 </script>
 
 </body>
 </html>
-
-* Simple professional UI
-* UptimeRobot API integration
