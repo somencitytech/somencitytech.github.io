@@ -4,151 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>S Creation AI Assistant</title>
-
 <style>
-body{
-    margin:0;
-    background:#f5f5f5;
-    font-family:Arial,sans-serif;
-}
-
-.chat{
-    width:100%;
-    max-width:420px;
-    height:650px;
-    margin:20px auto;
-    background:#fff;
-    border-radius:12px;
-    box-shadow:0 5px 20px rgba(0,0,0,.2);
-    display:flex;
-    flex-direction:column;
-}
-
-.header{
-    background:#0d6efd;
-    color:#fff;
-    padding:15px;
-    font-size:22px;
-    font-weight:bold;
-}
-
-.messages{
-    flex:1;
-    overflow:auto;
-    padding:15px;
-}
-
-.user{
-    background:#0d6efd;
-    color:#fff;
-    padding:10px;
-    margin:10px 0;
-    border-radius:10px;
-    text-align:right;
-}
-
-.bot{
-    background:#efefef;
-    padding:10px;
-    margin:10px 0;
-    border-radius:10px;
-}
-
-.bottom{
-    display:flex;
-    border-top:1px solid #ddd;
-}
-
-input{
-    flex:1;
-    border:none;
-    padding:15px;
-    font-size:16px;
-}
-
-button{
-    border:none;
-    background:#0d6efd;
-    color:#fff;
-    width:90px;
-    cursor:pointer;
-}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef2f7}
+#fab{position:fixed;right:20px;bottom:20px;width:60px;height:60px;border-radius:50%;
+background:#0d6efd;color:#fff;border:none;font-size:26px;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3)}
+#chat{position:fixed;right:20px;bottom:90px;width:360px;max-width:95vw;height:560px;background:#fff;
+border-radius:14px;display:none;flex-direction:column;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden}
+header{background:#0d6efd;color:#fff;padding:14px;font-weight:bold;display:flex;justify-content:space-between}
+#msgs{flex:1;overflow:auto;padding:12px;background:#f8f9fa}
+.msg{padding:10px 12px;border-radius:10px;margin:8px 0;max-width:85%;white-space:pre-wrap}
+.bot{background:#e9ecef}.user{background:#0d6efd;color:#fff;margin-left:auto}
+footer{display:flex;border-top:1px solid #ddd}
+input{flex:1;padding:12px;border:0;outline:none}
+button.send{width:80px;border:0;background:#0d6efd;color:#fff}
+.tools{padding:8px;border-top:1px solid #ddd;display:flex;gap:8px;flex-wrap:wrap}
+.tools a,.tools button{font-size:12px;padding:6px 10px;border-radius:20px;border:1px solid #0d6efd;background:#fff;color:#0d6efd;text-decoration:none;cursor:pointer}
+.dark{background:#1e1e1e}.dark #chat{background:#2b2b2b}.dark #msgs{background:#222}
+.dark .bot{background:#444;color:#fff}.dark input{background:#333;color:#fff}
 </style>
-
 </head>
-
 <body>
-
-<div class="chat">
-
-<div class="header">
-🤖 S Creation AI
+<button id="fab">💬</button>
+<div id="chat">
+<header>
+<span>🤖 S Creation AI</span>
+<span>
+<button onclick="toggleTheme()">🌓</button>
+<button onclick="document.getElementById('chat').style.display='none'">✖</button>
+</span>
+</header>
+<div id="msgs"></div>
+<div class="tools">
+<button onclick="ask('What services do you provide?')">Services</button>
+<button onclick="ask('How can I contact you?')">Contact</button>
+<a href="https://wa.me/" target="_blank">WhatsApp</a>
+<a href="tel:+911234567890">Call</a>
+<button onclick="clearChat()">Clear</button>
 </div>
-
-<div id="messages" class="messages">
-
-<div class="bot">
-Hello 👋<br><br>
-Welcome to S Creation.<br>
-How can I help you today?
+<footer>
+<input id="txt" placeholder="Type a message..." onkeydown="if(event.key==='Enter')send()">
+<button class="send" onclick="send()">Send</button>
+</footer>
 </div>
-
-</div>
-
-<div class="bottom">
-<input id="txt" placeholder="Type your question...">
-<button onclick="send()">Send</button>
-</div>
-
-</div>
-
 <script>
-
-const API_KEY="AQ.Ab8RN6L70dWw4L2p-b7a4mvXmKNlDsUoICTwpVb3zLXowEtbMg";
-
+const API_KEY="AQ.Ab8RN6L70dWw4L2p-b7a4mvXmKNlDsUoICTwpVb3zLXowEtbMg"; // Replace locally. Keep secrets off public sites.
+const MODEL="gemini-2.5-flash";
+const msgs=document.getElementById("msgs");
+document.getElementById("fab").onclick=()=>{chat.style.display="flex";}
+function add(text,cls){
+ let d=document.createElement("div");
+ d.className="msg "+cls;
+ d.textContent=text;
+ msgs.appendChild(d);
+ msgs.scrollTop=msgs.scrollHeight;
+ localStorage.setItem("screation_chat",msgs.innerHTML);
+}
+function load(){
+ const s=localStorage.getItem("screation_chat");
+ if(s){msgs.innerHTML=s;}
+ else add("Hello! Welcome to S Creation.\nAsk me anything.","bot");
+}
+function clearChat(){localStorage.removeItem("screation_chat");msgs.innerHTML="";load();}
+function toggleTheme(){document.body.classList.toggle("dark");}
+function ask(q){txt.value=q;send();}
 async function send(){
-
-let text=document.getElementById("txt").value;
-
-if(text=="") return;
-
-messages.innerHTML+=`<div class='user'>${text}</div>`;
-
-document.getElementById("txt").value="";
-
-let response=await fetch(
-`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-contents:[
-{
-parts:[
-{text:text}
-]
+ const t=txt.value.trim(); if(!t)return;
+ add(t,"user"); txt.value="";
+ add("Typing...","bot");
+ try{
+ const prompt=`You are S Creation AI assistant.
+If asked about S Creation, say it provides IT support, Azure, websites and digital services unless more information is available.
+User: ${t}`;
+ const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`,{
+ method:"POST",
+ headers:{"Content-Type":"application/json"},
+ body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+ });
+ const data=await r.json();
+ msgs.removeChild(msgs.lastChild);
+ if(!r.ok){
+   add("API Error:\n"+JSON.stringify(data,null,2),"bot");
+   return;
+ }
+ add(data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.","bot");
+ }catch(e){
+  msgs.removeChild(msgs.lastChild);
+  add("Error: "+e.message,"bot");
+ }
+ localStorage.setItem("screation_chat",msgs.innerHTML);
 }
-]
-})
-});
-
-let data=await response.json();
-
-let reply="Sorry, no response.";
-
-try{
-reply=data.candidates[0].content.parts[0].text;
-}catch(e){}
-
-messages.innerHTML+=`<div class='bot'>${reply}</div>`;
-
-messages.scrollTop=messages.scrollHeight;
-
-}
-
+load();
 </script>
-
 </body>
 </html>
